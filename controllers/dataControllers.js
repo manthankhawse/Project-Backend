@@ -145,22 +145,15 @@ const postOxy = async (req,res)=>{
 }
 
 const postECG = async (req,res)=>{
-    // try {
-    //     const {userId} = req.params;
-    //     const {data} = req.body;
-    //     let user = await User.findOne({_id : userId }).select("-password").select("-updatedAt");
-    //     let ecgVal = user.ecg;
-    //     user.ecg = [data , ...ecgVal];
-    //     user = await user.save();
-    //     res.status(200).json({message : "User profile updated" , user}); 
-    // } catch (error) {
-    //     res.status(500).json({error:"error occured in updateProfile"})
-    //     console.log("error occured" , error.message);
-    // }
+    try {
+        // const {userId} = req.params;
+        // const {data} = req.body;
+        // let user = await User.findOne({_id : userId }).select("-password").select("-updatedAt");
+        // let oxyVal = user.oxygenLevel;
+        // user.oxygenLevel = [data , ...oxyVal];
+        // user = await user.save();
 
-
-    // new
-    const {userId} = req.params;
+        const {userId} = req.params;
         const {val} = req.body;
         let user = await User.findOne({_id : userId }).select("-password").select("-updatedAt");
         var date = new Date()
@@ -183,19 +176,20 @@ const postECG = async (req,res)=>{
                 minutes
             }
         }
-        if(val>38){
-            remark = "High"
+
+        if(val<95){
+            remark = "Low"
         }else{
             remark = "Normal"
         }
-        let ecgVal = user.ecg;
-        user.ecg = [{val : val, timeStamp , remark}, ...ecgVal];
+        let ecgVals = user.ecg;
+        user.ecg = [{val : val, timeStamp, remark}, ...ecgVals];
         console.log(val);
         user = await user.save();
-        res.status(200).json({message : "User profile updated" , user});
 
+        res.status(200).json({message : "User profile updated" , user}); 
     } catch (error) {
-        res.status(500).json({error:"error occured in post temp"})
+        res.status(500).json({error:"error occured in updateProfile"})
         console.log("error occured" , error.message);
     }
 }
