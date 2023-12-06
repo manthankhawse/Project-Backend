@@ -145,16 +145,57 @@ const postOxy = async (req,res)=>{
 }
 
 const postECG = async (req,res)=>{
-    try {
-        const {userId} = req.params;
-        const {data} = req.body;
+    // try {
+    //     const {userId} = req.params;
+    //     const {data} = req.body;
+    //     let user = await User.findOne({_id : userId }).select("-password").select("-updatedAt");
+    //     let ecgVal = user.ecg;
+    //     user.ecg = [data , ...ecgVal];
+    //     user = await user.save();
+    //     res.status(200).json({message : "User profile updated" , user}); 
+    // } catch (error) {
+    //     res.status(500).json({error:"error occured in updateProfile"})
+    //     console.log("error occured" , error.message);
+    // }
+
+
+    // new
+    const {userId} = req.params;
+        const {val} = req.body;
         let user = await User.findOne({_id : userId }).select("-password").select("-updatedAt");
+        var date = new Date()
+        var currentOffset = date.getTimezoneOffset();
+        var ISTOffset = 330;
+        var ISTTime = new Date(date.getTime() + (ISTOffset + currentOffset)*60000);
+        var hours = ISTTime.getHours()
+        var minutes = ISTTime.getMinutes()
+        var day = ISTTime.getDate()
+        var month = ISTTime.getMonth()
+        var year = ISTTime.getFullYear()
+        let timeStamp = {
+            date : {
+                day ,
+                month ,
+                year
+            },
+            time :{
+                hours,
+                minutes
+            }
+        }
+        if(val>38){
+            remark = "High"
+        }else{
+            remark = "Normal"
+        }
         let ecgVal = user.ecg;
-        user.ecg = [data , ...ecgVal];
+        user.ecg = [{val : val, timeStamp , remark}, ...ecgVal];
+        console.log(val);
         user = await user.save();
-        res.status(200).json({message : "User profile updated" , user}); 
+        res.status(200).json({message : "User profile updated" , user});
+
     } catch (error) {
-        res.status(500).json({error:"error occured in updateProfile"})
+        res.status(500).json({error:"error occured in post temp"})
         console.log("error occured" , error.message);
     }
 }
