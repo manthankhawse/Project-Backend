@@ -61,7 +61,35 @@ const userSchema = mongoose.Schema({
         default : [],
     },
     ecg : {
-        type : [Number],
+        type : [{
+            val : {
+                type : Number,
+            },
+            timeStamp : {
+                date : {
+                    day : {
+                        type : Number
+                    },
+                    month : {
+                        type : Number
+                    },
+                    year :{
+                        type : Number
+                    }
+                },
+                time :{
+                    hours : {
+                        type : Number
+                    },
+                    minutes : {
+                        type : Number
+                    }
+                }
+            },
+            remark : {
+                type : String,
+            }
+        }],
         default : [],
     },
     temperature : {
